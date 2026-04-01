@@ -87,3 +87,18 @@ func Supervise(ctx context.Context, cfg Config, runnables ...Runnable) {
 
 	time.Sleep(cfg.GetDuration("MIDAS_CANCEL_WAIT_DURATION", 100*time.Millisecond))
 }
+
+type wrapper struct {
+	fn func(context.Context, Config) error
+}
+
+func (w *wrapper) Run(ctx context.Context, cfg Config) error {
+	return w.fn(ctx, cfg)
+}
+
+// WrapFunc Wraps a function into a [Runnable]
+func WrapFunc(fn func(context.Context, Config) error) Runnable {
+	return &wrapper{
+		fn: fn,
+	}
+}
