@@ -29,15 +29,15 @@ type Runnable interface {
 
 // Run Executes the runnable
 func Run(ctx context.Context, cfg Config, runnable Runnable) error {
-	slog.Info("Starting runnable")
+	slog.Info("starting runnable")
 
 	if err := runnable.Run(ctx, cfg); err != nil {
-		slog.Error("Runnable finished with error", "error", err.Error())
+		slog.Error("sunnable finished with error", "error", err.Error())
 
 		return err
 	}
 
-	slog.Info("Runnable finished without error")
+	slog.Info("runnable finished without error")
 
 	return nil
 }
@@ -48,13 +48,13 @@ func Run(ctx context.Context, cfg Config, runnable Runnable) error {
 func Go(ctx context.Context, cfg Config, runnable Runnable) context.CancelFunc {
 	cancelCtx, cancelFn := context.WithCancel(ctx)
 
-	slog.Info("Starting runnable in goroutine")
+	slog.Info("starting runnable in goroutine")
 
 	go func() {
 		if err := runnable.Run(cancelCtx, cfg); err != nil {
-			slog.Error("Runnable finished with error", "error", err.Error())
+			slog.Error("runnable finished with error", "error", err.Error())
 		} else {
-			slog.Info("Runnable finished without error")
+			slog.Info("runnable finished without error")
 		}
 	}()
 
@@ -66,7 +66,7 @@ func Go(ctx context.Context, cfg Config, runnable Runnable) context.CancelFunc {
 //   - MIDAS_CANCEL_WAIT_DURATION: control the time to wait after calling all runnable cancel functions, default to 100ms
 func Supervise(ctx context.Context, cfg Config, runnables ...Runnable) {
 	if ctx.Err() != nil {
-		slog.Error("Trying to supervise with faulty context, exiting supervise", "error", ctx.Err())
+		slog.Error("trying to supervise with faulty context, exiting supervise", "error", ctx.Err())
 		return
 	}
 
@@ -79,7 +79,7 @@ func Supervise(ctx context.Context, cfg Config, runnables ...Runnable) {
 	signal.Notify(sc, syscall.SIGTERM, syscall.SIGINT, os.Interrupt)
 	<-sc // Hold app alive until a termination signal
 
-	slog.Info("Cancelling contexts")
+	slog.Info("cancelling contexts")
 
 	for _, cancel := range cancels {
 		cancel()
