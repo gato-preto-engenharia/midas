@@ -1,12 +1,3 @@
-# Midas
-
-Application lifecycle utilities for go applications
-
-## Getting started
-
-### Example usage
-
-```go
 package main
 
 import (
@@ -31,5 +22,3 @@ func main() {
 	midas.SetupSlog(config)
 	midas.Run(context.Background(), config, &App{})
 }
-
-```
